@@ -33,6 +33,7 @@ public class UIManager : MonoBehaviour
     {
         PlayPanel.SetActive(false);
         StartPanel.SetActive(true);
+        winPanel.SetActive(false);
     }
    
     public void UpdateMoves(int moves)

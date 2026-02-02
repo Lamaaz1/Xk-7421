@@ -157,6 +157,7 @@ public class BoardManager : MonoBehaviour
     {
         if (matchesFound >= totalPairs)
         {
+            UIManager.Instance.ShowWin();
             Debug.Log("You win!" );
         }
     }
@@ -224,6 +225,15 @@ public class BoardManager : MonoBehaviour
         grid.cellSize = new Vector2(size, size);
     }
 
+    public void ResetGame()
+    {
+        ClearBoard();
 
+        moves = 0;
+        matchesFound = 0;
+
+        UIManager.Instance.UpdateMoves(0);
+        UIManager.Instance.UpdateMatches(0);
+    }
 
 }
