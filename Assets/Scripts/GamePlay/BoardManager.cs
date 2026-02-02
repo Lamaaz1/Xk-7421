@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class DifficultyData
@@ -24,6 +25,8 @@ public class BoardManager : MonoBehaviour
     private int rows;
     private int cols;
 
+    public GridLayoutGroup grid;
+
     private List<CardController> revealedCards = new List<CardController>();
     private bool isChecking = false;
 
@@ -32,6 +35,7 @@ public class BoardManager : MonoBehaviour
     {
         ClearBoard();
         ApplyDifficulty();
+        UpdateGridSize();
         GenerateBoard();
         UIManager.Instance.Play();
     }
@@ -52,13 +56,22 @@ public class BoardManager : MonoBehaviour
     private void GenerateBoard()
     {
         int total = rows * cols;
+        int pairs = total / 2;
+
+        if (cardSprites.Count == 0)
+        {
+            Debug.LogError("No sprites assigned!");
+            return;
+        }
 
         List<int> ids = new List<int>();
 
-        for (int i = 0; i < total / 2; i++)
+        for (int i = 0; i < pairs; i++)
         {
-            ids.Add(i);
-            ids.Add(i);
+            int spriteIndex = i % cardSprites.Count;
+
+            ids.Add(spriteIndex);
+            ids.Add(spriteIndex);
         }
 
         Shuffle(ids);
@@ -67,13 +80,15 @@ public class BoardManager : MonoBehaviour
         {
             CardController card = Instantiate(cardPrefab, boardParent);
 
-            int id = ids[i];
-            Sprite sprite = cardSprites[id];
+            int safeIndex = ids[i] % cardSprites.Count; // ?? protection
+            Sprite sprite = cardSprites[safeIndex];
 
             card.board = this;
-            card.Setup(id, sprite);
+            card.Setup(safeIndex, sprite);
         }
     }
+
+
 
     private void Shuffle(List<int> list)
     {
@@ -128,4 +143,59 @@ public class BoardManager : MonoBehaviour
 
         revealedCards.Clear();
     }
+    private void UpdateGridSize()
+    {
+        int totalCards = rows * cols;
+
+        List<(int columns, int rows)> possibleGrids = new List<(int columns, int rows)>();
+
+        for (int i = 2; i <= totalCards; i++)
+        {
+            if (totalCards % i == 0)
+            {
+                int columns = i;
+                int r = totalCards / i;
+
+                if (r >= 2 && columns >= r)
+                    possibleGrids.Add((columns, r));
+            }
+        }
+
+        var best = possibleGrids[0];
+
+        foreach (var g in possibleGrids)
+            if (g.columns < best.columns)
+                best = g;
+
+        int bestColumns = best.columns;
+        int bestRows = best.rows;
+
+        RectTransform rt = boardParent.GetComponent<RectTransform>();
+
+        float panelWidth = rt.rect.width;
+        float panelHeight = rt.rect.height;
+
+        float padLeft = grid.padding.left;
+        float padRight = grid.padding.right;
+        float padTop = grid.padding.top;
+        float padBottom = grid.padding.bottom;
+
+        float spacingX = grid.spacing.x;
+        float spacingY = grid.spacing.y;
+
+        float usableWidth = panelWidth - padLeft - padRight;
+        float usableHeight = panelHeight - padTop - padBottom;
+
+        float cellWidth = (usableWidth - spacingX * (bestColumns - 1)) / bestColumns;
+        float cellHeight = (usableHeight - spacingY * (bestRows - 1)) / bestRows;
+
+        float size = Mathf.Min(cellWidth, cellHeight);
+
+        grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        grid.constraintCount = bestColumns;
+        grid.cellSize = new Vector2(size, size);
+    }
+
+
+
 }

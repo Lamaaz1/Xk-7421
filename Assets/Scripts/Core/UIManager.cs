@@ -17,14 +17,19 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlayPanel.SetActive(false);
-        StartPanel.SetActive(true);
+        StarGame();
     }
     public void Play()
     {
         PlayPanel.SetActive(true);
         StartPanel.SetActive(false);
     }
+    public void StarGame()
+    {
+        PlayPanel.SetActive(false);
+        StartPanel.SetActive(true);
+    }
+    
     // Update is called once per frame
     void Update()
     {
