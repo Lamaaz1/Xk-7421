@@ -6,6 +6,8 @@ public class CardController : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Image frontImage;
     [SerializeField] private Image backImage;
+    public BoardManager board;
+
 
     public int CardId { get; private set; }
 
@@ -31,6 +33,8 @@ public class CardController : MonoBehaviour, IPointerClickHandler
     {
         if (isRevealed) return;
         StartCoroutine(Flip(true));
+        
+
     }
 
     public void Hide()
@@ -72,6 +76,7 @@ public class CardController : MonoBehaviour, IPointerClickHandler
         isRevealed = reveal;
         isAnimating = false;
 
+        board.OnCardRevealed(this);
         // notify board later (Will add this in BoardManager step)
     }
 
