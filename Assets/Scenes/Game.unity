@@ -1238,11 +1238,14 @@ MonoBehaviour:
     cols: 4
   - name: Hard
     rows: 6
-    cols: 6
+    cols: 4
   - name: VeryHard
-    rows: 8
-    cols: 8
+    rows: 6
+    cols: 6
   selectedDifficulty: 0
+  moves: 0
+  score: 0
+  matchesFound: 0
   grid: {fileID: 1237932582}
 --- !u!114 &1237932582
 MonoBehaviour:
@@ -1459,7 +1462,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Matches
+  m_text: Turns
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1486,15 +1489,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 78.65
+  m_fontSize: 84.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 15.09
   m_fontSizeMax: 100.6
   m_fontStyle: 1
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -1800,6 +1803,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayPanel: {fileID: 1668508140}
   StartPanel: {fileID: 1788336045}
+  scoreText: {fileID: 0}
+  movesText: {fileID: 296552831}
+  matchesText: {fileID: 557530578}
+  winPanel: {fileID: 0}
 --- !u!1 &1668508140
 GameObject:
   m_ObjectHideFlags: 0

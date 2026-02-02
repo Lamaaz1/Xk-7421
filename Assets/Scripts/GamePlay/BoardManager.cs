@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,6 +22,13 @@ public class BoardManager : MonoBehaviour
     [Header("Difficulty")]
     public List<DifficultyData> difficulties;
     public int selectedDifficulty = 0;
+
+    [Header("Scoring")]
+    public int moves = 0;
+    public int matchesFound = 0;
+    private int totalPairs;
+ 
+
 
     private int rows;
     private int cols;
@@ -86,6 +94,9 @@ public class BoardManager : MonoBehaviour
             card.board = this;
             card.Setup(safeIndex, sprite);
         }
+        totalPairs = pairs;
+        matchesFound = 0;
+       
     }
 
 
@@ -107,7 +118,6 @@ public class BoardManager : MonoBehaviour
             return;
 
         revealedCards.Add(card);
-
         if (revealedCards.Count >= 2)
         {
             StartCoroutine(CheckMatch());
@@ -119,20 +129,38 @@ public class BoardManager : MonoBehaviour
         isChecking = true;
 
         yield return new WaitForSeconds(0.5f);
-
+        moves++;
+        UIManager.Instance.UpdateMoves(moves);
         CardController a = revealedCards[0];
         CardController b = revealedCards[1];
 
-        if (a.CardId != b.CardId)
+        if (a.CardId == b.CardId)
+        {
+            
+            matchesFound++;
+            UIManager.Instance.UpdateMatches(matchesFound);
+
+            CheckWin();
+        }
+        else
         {
             a.Hide();
             b.Hide();
         }
 
+
         revealedCards.RemoveRange(0, 2);
 
         isChecking = false;
     }
+    private void CheckWin()
+    {
+        if (matchesFound >= totalPairs)
+        {
+            Debug.Log("You win!" );
+        }
+    }
+
 
     private void ClearBoard()
     {

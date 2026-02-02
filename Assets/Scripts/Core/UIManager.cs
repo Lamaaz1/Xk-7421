@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -7,6 +8,10 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
     public GameObject PlayPanel;
     public GameObject StartPanel;
+
+    public TMP_Text movesText;
+    public TMP_Text matchesText;
+    public GameObject winPanel;
 
     private void Awake()
     {
@@ -29,10 +34,19 @@ public class UIManager : MonoBehaviour
         PlayPanel.SetActive(false);
         StartPanel.SetActive(true);
     }
-    
-    // Update is called once per frame
-    void Update()
+   
+    public void UpdateMoves(int moves)
     {
-        
+        movesText.text = moves.ToString();
+    }
+
+    public void UpdateMatches(int matches)
+    {
+        matchesText.text = matches.ToString();
+    }
+
+    public void ShowWin()
+    {
+        winPanel.SetActive(true);
     }
 }
