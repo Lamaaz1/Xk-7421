@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class UIManager : MonoBehaviour
     public GameObject winPanel;
 
     public RectTransform restartButton;
+    public Toggle[] levelToggles;
+
 
     private void Awake()
     {
@@ -80,6 +83,17 @@ public class UIManager : MonoBehaviour
             t.localScale = Vector3.Lerp(big, start, time / 0.15f);
             yield return null;
         }
+    }
+    public void NextLevel()
+    {
+        PlayPanel.SetActive(true);
+        StartPanel.SetActive(false);
+        winPanel.SetActive(false);
+    }
+    public void SetLevelToggle(int index)
+    {
+        for (int i = 0; i < levelToggles.Length; i++)
+            levelToggles[i].isOn = (i == index);
     }
 
 }

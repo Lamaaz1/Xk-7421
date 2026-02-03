@@ -27,8 +27,9 @@ public class BoardManager : MonoBehaviour
     public int moves = 0;
     public int matchesFound = 0;
     private int totalPairs;
- 
 
+
+    private int currentLevel = 0;
 
     private int rows;
     private int cols;
@@ -39,9 +40,19 @@ public class BoardManager : MonoBehaviour
     private bool isChecking = false;
     public float previewTime = 1.5f;
 
+
+    private void Start()
+    {
+        currentLevel = PlayerPrefs.GetInt("level", 0);
+        selectedDifficulty = currentLevel;
+        UIManager.Instance.SetLevelToggle(currentLevel);
+    }
     // called by Play button
     public void StartGame()
     {
+        currentLevel = PlayerPrefs.GetInt("level", 0);
+        selectedDifficulty = currentLevel;
+        UIManager.Instance.SetLevelToggle(currentLevel);
         ClearBoard();
         ApplyDifficulty();
         UpdateGridSize();
@@ -167,6 +178,14 @@ public class BoardManager : MonoBehaviour
         if (matchesFound >= totalPairs)
         {
             UIManager.Instance.ShowWin();
+            currentLevel++;
+
+            if (currentLevel >= difficulties.Count)
+                currentLevel = difficulties.Count - 1;
+
+            PlayerPrefs.SetInt("level", currentLevel);
+            PlayerPrefs.Save();
+
             Debug.Log("You win!" );
         }
     }

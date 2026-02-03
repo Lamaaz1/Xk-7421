@@ -19,4 +19,11 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.StarGame();
         board.ResetGame();
     }
+    public void NextRound()
+    {
+        UIManager.Instance.NextLevel();
+        board.ResetGame();
+
+        board.StartGame();
+    }
 }
