@@ -35,7 +35,7 @@ public class BoardManager : MonoBehaviour
 
     public GridLayoutGroup grid;
 
-    private List<CardController> revealedCards = new List<CardController>();
+    private Queue<CardController> revealedQueue = new Queue<CardController>();
     private bool isChecking = false;
 
     // called by Play button
@@ -114,45 +114,46 @@ public class BoardManager : MonoBehaviour
 
     public void OnCardRevealed(CardController card)
     {
-        if (isChecking)
+        if (revealedQueue.Contains(card))
             return;
 
-        revealedCards.Add(card);
-        if (revealedCards.Count >= 2)
-        {
-            StartCoroutine(CheckMatch());
-        }
+        revealedQueue.Enqueue(card);
+
+        if (!isChecking)
+            StartCoroutine(ProcessQueue());
     }
 
-    private IEnumerator CheckMatch()
+    private IEnumerator ProcessQueue()
     {
         isChecking = true;
 
-        yield return new WaitForSeconds(0.5f);
-        moves++;
-        UIManager.Instance.UpdateMoves(moves);
-        CardController a = revealedCards[0];
-        CardController b = revealedCards[1];
-
-        if (a.CardId == b.CardId)
+        while (revealedQueue.Count >= 2)
         {
-            
-            matchesFound++;
-            UIManager.Instance.UpdateMatches(matchesFound);
+            CardController a = revealedQueue.Dequeue();
+            CardController b = revealedQueue.Dequeue();
 
-            CheckWin();
+            yield return new WaitForSeconds(0.5f);
+
+            moves++;
+            UIManager.Instance.UpdateMoves(moves);
+
+            if (a.CardId == b.CardId)
+            {
+                matchesFound++;
+                UIManager.Instance.UpdateMatches(matchesFound);
+                CheckWin();
+            }
+            else
+            {
+                a.Hide();
+                b.Hide();
+            }
         }
-        else
-        {
-            a.Hide();
-            b.Hide();
-        }
-
-
-        revealedCards.RemoveRange(0, 2);
 
         isChecking = false;
     }
+
+ 
     private void CheckWin()
     {
         if (matchesFound >= totalPairs)
@@ -162,7 +163,6 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-
     private void ClearBoard()
     {
         foreach (Transform child in boardParent)
@@ -170,8 +170,9 @@ public class BoardManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        revealedCards.Clear();
+        revealedQueue.Clear();
     }
+
     private void UpdateGridSize()
     {
         int totalCards = rows * cols;
@@ -232,8 +233,11 @@ public class BoardManager : MonoBehaviour
         moves = 0;
         matchesFound = 0;
 
+        revealedQueue.Clear();
+
         UIManager.Instance.UpdateMoves(0);
         UIManager.Instance.UpdateMatches(0);
     }
+
 
 }
