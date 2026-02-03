@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections;
 
 public class CardController : MonoBehaviour, IPointerClickHandler
 {
@@ -78,10 +79,23 @@ public class CardController : MonoBehaviour, IPointerClickHandler
         board.OnCardRevealed(this);
     }
 
-    private void HideInstant()
+    public void HideInstant()
     {
         frontImage.gameObject.SetActive(false);
         backImage.gameObject.SetActive(true);
         isRevealed = false;
     }
+    public void RevealInstant()
+    {
+        frontImage.gameObject.SetActive(true);
+        backImage.gameObject.SetActive(false);
+        isRevealed = true;
+    }
+    public IEnumerator FlipPreview(bool reveal)
+    {
+        yield return Flip(reveal);
+    }
+
+
+
 }

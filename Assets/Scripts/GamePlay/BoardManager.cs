@@ -37,6 +37,7 @@ public class BoardManager : MonoBehaviour
 
     private Queue<CardController> revealedQueue = new Queue<CardController>();
     private bool isChecking = false;
+    public float previewTime = 1.5f;
 
     // called by Play button
     public void StartGame()
@@ -45,6 +46,7 @@ public class BoardManager : MonoBehaviour
         ApplyDifficulty();
         UpdateGridSize();
         GenerateBoard();
+        StartCoroutine(PreviewCards());
         UIManager.Instance.Play();
     }
 
@@ -141,6 +143,9 @@ public class BoardManager : MonoBehaviour
             {
                 matchesFound++;
                 UIManager.Instance.UpdateMatches(matchesFound);
+                a.GetComponent<CanvasGroup>().alpha = 0;
+                b.GetComponent<CanvasGroup>().alpha = 0;
+
                 CheckWin();
             }
             else
@@ -226,6 +231,25 @@ public class BoardManager : MonoBehaviour
         grid.cellSize = new Vector2(size, size);
     }
 
+    private IEnumerator PreviewCards()
+    {
+        yield return new WaitForSeconds(.3f);
+        // reveal all
+        foreach (Transform child in boardParent)
+        {
+            CardController c = child.GetComponent<CardController>();
+            c.RevealInstant();
+        }
+
+        yield return new WaitForSeconds(previewTime);
+
+        // hide all
+        foreach (Transform child in boardParent)
+        {
+            CardController c = child.GetComponent<CardController>();
+            c.HideInstant();
+        }
+    }
     public void ResetGame()
     {
         ClearBoard();
