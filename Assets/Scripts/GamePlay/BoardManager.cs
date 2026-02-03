@@ -145,6 +145,7 @@ public class BoardManager : MonoBehaviour
                 UIManager.Instance.UpdateMatches(matchesFound);
                 a.GetComponent<CanvasGroup>().alpha = 0;
                 b.GetComponent<CanvasGroup>().alpha = 0;
+                SoundManager.instance.PlayMatchSound();
 
                 CheckWin();
             }
@@ -152,6 +153,8 @@ public class BoardManager : MonoBehaviour
             {
                 a.Hide();
                 b.Hide();
+                SoundManager.instance.PlayFailSound();
+
             }
         }
 

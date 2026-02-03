@@ -13,6 +13,8 @@ public class UIManager : MonoBehaviour
     public TMP_Text matchesText;
     public GameObject winPanel;
 
+    public RectTransform restartButton;
+
     private void Awake()
     {
         if (Instance == null)
@@ -49,5 +51,35 @@ public class UIManager : MonoBehaviour
     public void ShowWin()
     {
         winPanel.SetActive(true);
+        AnimateWinButton(restartButton);
     }
+    public void AnimateWinButton(RectTransform btn)
+    {
+        StartCoroutine(Pop(btn));
+    }
+
+    private IEnumerator Pop(RectTransform t)
+    {
+        Vector3 start = Vector3.one;
+        Vector3 big = Vector3.one * 1.2f;
+
+        float time = 0;
+
+        while (time < 0.15f)
+        {
+            time += Time.deltaTime;
+            t.localScale = Vector3.Lerp(start, big, time / 0.15f);
+            yield return null;
+        }
+
+        time = 0;
+
+        while (time < 0.15f)
+        {
+            time += Time.deltaTime;
+            t.localScale = Vector3.Lerp(big, start, time / 0.15f);
+            yield return null;
+        }
+    }
+
 }

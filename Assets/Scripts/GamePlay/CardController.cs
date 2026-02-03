@@ -75,7 +75,7 @@ public class CardController : MonoBehaviour, IPointerClickHandler
 
         isRevealed = reveal;
         isAnimating = false;
-
+        SoundManager.instance.PlayFlipSound();
         board.OnCardRevealed(this);
     }
 
